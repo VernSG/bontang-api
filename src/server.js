@@ -1,6 +1,7 @@
 const express = require("express");
 const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
+const baseurl = require("./baseUrl");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -16,12 +17,9 @@ let browser;
 app.get("/api/population", async (req, res) => {
   try {
     const populationPage = await browser.newPage();
-    await populationPage.goto(
-      "https://disdukcapil.bontangkota.go.id/agregat/",
-      {
-        waitUntil: "networkidle2",
-      }
-    );
+    await populationPage.goto(baseurl.disdukcapil, {
+      waitUntil: "networkidle2",
+    });
 
     await populationPage.waitForSelector("table tbody tr", { timeout: 10000 });
     const populationContent = await populationPage.content();
@@ -56,9 +54,9 @@ app.get("/api/population", async (req, res) => {
 // Endpoint untuk mendapatkan data pendidikan dari Dapodik
 app.get("/api/education", async (req, res) => {
   try {
-    const { jenjang, wilayah } = req.query; // Mengambil query parameters jika ada
+    const { jenjang, wilayah } = req.query;
     const educationPage = await browser.newPage();
-    await educationPage.goto("https://dapo.kemdikbud.go.id/pd/2/166300", {
+    await educationPage.goto(baseurl.dapodik, {
       waitUntil: "networkidle2",
     });
 
