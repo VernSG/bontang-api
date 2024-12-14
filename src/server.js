@@ -9,11 +9,11 @@ const PORT = process.env.PORT || 3000;
 let browser;
 
 (async () => {
-  // Meluncurkan browser Puppeteer sekali di awal
+  // start puppeteer
   browser = await puppeteer.launch({ headless: true });
 })();
 
-// Endpoint untuk mendapatkan data populasi dari Disdukcapil
+// Endpoint 
 app.get("/api/population", async (req, res) => {
   try {
     const populationPage = await browser.newPage();
@@ -51,7 +51,7 @@ app.get("/api/population", async (req, res) => {
   }
 });
 
-// Endpoint untuk mendapatkan data pendidikan dari Dapodik
+// Endpoint 
 app.get("/api/education", async (req, res) => {
   try {
     const { jenjang, wilayah } = req.query;
@@ -158,10 +158,9 @@ app.get("/api/education", async (req, res) => {
 
     await educationPage.close();
 
-    // Filter data berdasarkan query parameters jika ada
     let filteredData = educationData;
 
-    // Filter berdasarkan wilayah
+    // filter berdasarkan wilayah
     if (wilayah) {
       filteredData = filteredData.filter((data) =>
         data.wilayah.toLowerCase().includes(wilayah.toLowerCase())
@@ -171,7 +170,7 @@ app.get("/api/education", async (req, res) => {
     // Filter berdasarkan jenjang pendidikan, misalnya 'sma'
     if (jenjang) {
       filteredData = filteredData.map((data) => {
-        // Jika jenjang yang diminta adalah 'sma', maka hanya tampilkan data SMA saja
+        // jika jenjang yang diminta adalah 'sma', maka hanya tampilkan data SMA saja
         if (jenjang.toLowerCase() === "sma") {
           return {
             wilayah: data.wilayah,
@@ -195,7 +194,6 @@ app.get("/api/education", async (req, res) => {
   }
 });
 
-// Pastikan browser ditutup saat aplikasi berhenti
 process.on("exit", () => {
   if (browser) {
     browser.close();
